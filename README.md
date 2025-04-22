@@ -17,8 +17,9 @@ minishell/
 	see under Projects - ToDo | In Progress | Done
 
 - With every start, pull code (main branch) + create new branch (e.g. for every feature): 
-	git pull origin main
-	git checkout -b feature/parser
+  	(Pull new code) git pull origin main
+	(Change branch) git checkout feature/parser
+	(Create branch) git checkout -b feature/parser
 	
 - Add/Commit/Push
 	git add .
