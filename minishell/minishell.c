@@ -13,7 +13,7 @@
 #include "minishell.h"
 
 
-char	*m_riplace_variable(t_data *data, char *var_name)
+char	*m_replace_variable(t_data *data, char *var_name)
 {
 	int			i;
 	t_env_list	*pnt;
@@ -82,9 +82,7 @@ char	*m_str_concat(char *str1, char *str2)
 // 	return (SUCCESS);
 // }
 
-
 ///    echo" $USER %kkkkkk  $PWD m"  kkkkk  "mmmmm"
-
 
 void	to_print(t_input_list *list)
 {

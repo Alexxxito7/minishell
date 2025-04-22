@@ -28,7 +28,7 @@ int	m_found_command(char *str)
 char	*m_trim(char *input)
 {
 	char	*temp;
-	int		lenght;
+	int		length;
 	int		start;
 	int		end;
 
@@ -37,9 +37,9 @@ char	*m_trim(char *input)
 	lenght = ft_strlen(input);
 	while (input[start] == ' ')
 		start++;
-	while (input[lenght - end - 1] == ' ')
+	while (input[length - end - 1] == ' ')
 		end++;
-	temp = ft_substr(input, start, lenght - end);
+	temp = ft_substr(input, start, length - end);
 	free(input);
 	return (temp);
 }
