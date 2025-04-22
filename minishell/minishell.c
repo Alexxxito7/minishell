@@ -13,7 +13,7 @@
 #include "minishell.h"
 
 
-char	*m_riplace_variable(t_data *data, char *var_name)
+char	*m_replace_variable(t_data *data, char *var_name)
 {
 	int			i;
 	t_env_list	*pnt;
@@ -78,7 +78,6 @@ int	m_find_variable(t_data *data, t_input_list *input_list)
 		}
 		pnt = pnt->next;
 	}
-	
 	return (SUCCESS);
 }
 
