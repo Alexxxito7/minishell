@@ -57,30 +57,30 @@ char	*m_str_concat(char *str1, char *str2)
 	return (free(str1), free(str2), temp);
 }
 
-int	m_find_variable(t_data *data, t_input_list *input_list)
-{
-	t_input_list	*pnt;
-	int				start;
-	int				end;
+// int	m_find_variable(t_data *data, t_input_list *input_list)
+// {
+// 	t_input_list	*pnt;
+// 	int				start;
+// 	int				end;
 
-	pnt = input_list;
-	while (pnt)
-	{
-		if (pnt->c == 't')
-		{
-			end = 0;
-			start = 0;
-			while (pnt->str[start])
-			{
-				
-			}
-			
-		}
-		pnt = pnt->next;
-	}
+// 	pnt = input_list;
+// 	while (pnt)
+// 	{
+// 		if (pnt->c == 't')
+// 		{
+// 			end = 0;
+// 			start = 0;
+// 			while (pnt->str[start])
+// 			{
+// 				if (pnt->str[start] == )
+// 				start++;
+// 			}
+// 		}
+// 		pnt = pnt->next;
+// 	}
 	
-	return (SUCCESS);
-}
+// 	return (SUCCESS);
+// }
 
 
 ///    echo" $USER %kkkkkk  $PWD m"  kkkkk  "mmmmm"

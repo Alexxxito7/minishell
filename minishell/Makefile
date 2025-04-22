@@ -14,8 +14,8 @@ SRC = minishell.c string.c error.c env_list.c input_list.c
 
 NAME = minishell
 FLAGS = -Wall -Wextra -Werror -g
-LIB_DIR = libft
-LIB = $(LIB_DIR)/libft.a
+LIB_DIR = src/libft
+LIB = $(LIB_DIR)libft.a
 LDFLAGS = -L/usr/local/opt/readline/lib -I/usr/local/opt/readline/include -lreadline -lncurses
 CC = cc
 OBJ = $(SRC:%.c=%.o)
