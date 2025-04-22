@@ -34,7 +34,7 @@ char	*m_trim(char *input)
 
 	start = 0;
 	end = 0;
-	lenght = ft_strlen(input);
+	length = ft_strlen(input);
 	while (input[start] == ' ')
 		start++;
 	while (input[length - end - 1] == ' ')

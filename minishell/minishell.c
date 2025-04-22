@@ -13,7 +13,7 @@
 #include "minishell.h"
 
 
-char	*m_riplace_variable(t_data *data, char *var_name)
+char	*m_replace_variable(t_data *data, char *var_name)
 {
 	int			i;
 	t_env_list	*pnt;
@@ -45,7 +45,7 @@ char	*m_str_concat(char *str1, char *str2)
 	i = -1;
 	j = 0;
 	if (!str1 || !str2)
-		return ( NULL);
+		return (NULL);
 	temp = malloc(ft_strlen(str1) + ft_strlen(str2) + 1);
 	if (!temp)
 		return (free(str1), free(str2), NULL);
