@@ -58,10 +58,18 @@ typedef struct s_data
 	struct s_env_list	env_list;
 }	t_data;
 
+/////   variable.c
+
+char	*m_replace_variable(t_data *data, char *var_name);
+int		m_single_quote(t_data *data, t_input_list *input_list, int *start);
+int		m_double_quote(t_data *data, t_input_list *input_list, int *start);
+
 // stirng.c
 
 char	*m_trim(char *input);
 int		m_count_qoute(char *input);
+char	*m_str_cut_to_end(char *str, int start);
+char	*m_str_concat(char *str1, char *str2);
 
 // error.c
 

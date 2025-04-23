@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRC = minishell.c string.c error.c env_list.c input_list.c
+SRC = minishell.c string.c error.c env_list.c input_list.c variable.c
 
 NAME = minishell
 FLAGS = -Wall -Wextra -Werror -g

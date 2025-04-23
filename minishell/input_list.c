@@ -42,16 +42,18 @@ t_input_list	*m_new_input_node(t_input_list *list, char *str, char c)
 }
 void m_free_input_list(t_input_list *input_list)
 {
-    t_input_list *pnt = input_list;
-    t_input_list *next;
-    
-    while (pnt != NULL)
-    {
-        next = pnt->next;
-        free(pnt->str);   // Ազատել string-ը
-        free(pnt);        // Ազատել հենց հանգույցը
-        pnt = next;
-    }
+	t_input_list	*pnt;
+	t_input_list	*next;
+
+	pnt = input_list->next;
+	while (pnt)
+	{
+		next = pnt->next;
+		free(pnt->str);
+		free(pnt);
+		pnt = next;
+	}
+	free(input_list->str);
 }
 // void	m_free_input_list(t_input_list *input_list)
 // {
