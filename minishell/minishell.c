@@ -43,6 +43,11 @@ char	*m_replace_variable(t_data *data, char *var_name)
 	return (ft_strdup(""));
 }
 
+void fu2(void)
+{
+	write(1, "Hello Alex", 10);
+}
+
 int m_find_variable(t_data *data, t_input_list *input_list)
 {
 	t_input_list	*pnt;
@@ -51,7 +56,6 @@ int m_find_variable(t_data *data, t_input_list *input_list)
 	int				end;
 
 	pnt = input_list;
-	/// hellloo
 	while (pnt)
 	{
 		if (pnt->c == 't')
