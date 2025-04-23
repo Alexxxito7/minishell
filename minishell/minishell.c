@@ -12,20 +12,27 @@
 
 #include "minishell.h"
 
+char	*m_str_concat(char *str1, char *str2);
+char	*m_str_cut_to_end(char *str, int start);
+void	to_print(t_input_list *list);
 
-char	*m_riplace_variable(t_data *data, char *var_name)
+char	*m_replace_variable(t_data *data, char *var_name)
 {
 	int			i;
 	t_env_list	*pnt;
 
 	pnt = &data->env_list;
 	i = 0;
+	if (ft_strncmp(var_name, "$?", 2) == 0)
+	{
+		return (ft_itoa(data->exit_status));
+	}
 	while (pnt)
 	{
 		while (pnt->key[i] && var_name[i] && pnt->key[i] == var_name[i])
-			i++;
+			i++;        
 		if (pnt->key[i] == var_name[i])
-		{
+        {
 			free(var_name);
 			var_name = ft_strdup(pnt->value);
 			return (var_name);
@@ -34,6 +41,60 @@ char	*m_riplace_variable(t_data *data, char *var_name)
 	}
 	free(var_name);
 	return (ft_strdup(""));
+}
+
+int m_find_variable(t_data *data, t_input_list *input_list)
+{
+	t_input_list	*pnt;
+	char			*temp1;
+	int				start;
+	int				end;
+
+	pnt = input_list;
+	while (pnt)
+	{
+		if (pnt->c == 't')
+		{
+			start = -1;
+			while (pnt->str[++start])
+			{
+				if (pnt->str[start] == '$' && pnt->str[start + 1] == '?')
+				{
+					temp1 = m_str_concat(ft_substr(pnt->str, 0, start),
+					m_replace_variable(data, ft_substr(pnt->str, start, 2)));
+					if (!temp1)
+						return (MALLOC);
+					pnt->str = m_str_concat(temp1, m_str_cut_to_end(pnt->str, start + 2));
+					if (!pnt->str)
+						return (MALLOC);
+					start = -1;
+				}
+				else if (pnt->str[start] == '$' && (pnt->str[start + 1] == ' '
+					|| pnt->str[start + 1] == '\'' || pnt->str[start + 1] == '\"'))
+					start++;
+				else if (pnt->str[start] == '$')
+				{
+					end = 0;
+					temp1 = ft_substr(pnt->str, 0, start);
+					if (!temp1)
+						return (MALLOC);
+					start++;
+					while (ft_isdigit(pnt->str[start + end]) || ft_isalpha(pnt->str[start + end]))
+					end++;
+					temp1 = m_str_concat(temp1, m_replace_variable(data, ft_substr(pnt->str, start, end)));
+					if (!temp1)
+						return (MALLOC);
+					pnt->str = m_str_concat(temp1, m_str_cut_to_end(pnt->str, start + end));
+					if (!pnt->str)
+						return (MALLOC);
+					start = -1;
+				}
+			}
+		}
+		pnt = pnt->next;
+	}
+	to_print(input_list);
+	return (SUCCESS);
 }
 
 char	*m_str_concat(char *str1, char *str2)
@@ -57,43 +118,17 @@ char	*m_str_concat(char *str1, char *str2)
 	return (free(str1), free(str2), temp);
 }
 
-// int	m_find_variable(t_data *data, t_input_list *input_list)
-// {
-// 	t_input_list	*pnt;
-// 	int				start;
-// 	int				end;
-
-// 	pnt = input_list;
-// 	while (pnt)
-// 	{
-// 		if (pnt->c == 't')
-// 		{
-// 			end = 0;
-// 			start = 0;
-// 			while (pnt->str[start])
-// 			{
-// 				if (pnt->str[start] == )
-// 				start++;
-// 			}
-// 		}
-// 		pnt = pnt->next;
-// 	}
-	
-// 	return (SUCCESS);
-// }
-
-///    echo" $USER %kkkkkk  $PWD m"  kkkkk  "mmmmm"
-
 void	to_print(t_input_list *list)
 {
-	while (list)
+	t_input_list *pnt;
+
+	pnt = list;
+	while (pnt)
 	{
-		printf("len %zu > %c > %s\n", ft_strlen(list->str), list->c, list->str);
-		list = list->next;
+		printf("len %zu > %c > %s\n", ft_strlen(pnt->str), pnt->c, pnt->str);
+		pnt = pnt->next;
 	}
 }
-
-////  echo 'hell' "$USER' $USER' " "$USER"
 
 char	*m_str_cut_to_end(char *str, int start)
 {
@@ -158,6 +193,9 @@ int	m_find_qoute(t_data *data)
 		}
 	}
 	to_print(&input_list);
+	printf("---------------------------------------\n");
+	m_find_variable(data, &input_list);
+
 	return (SUCCESS);
 }
 
@@ -186,3 +224,8 @@ int	main(int argc, char **argv, char **env)
 	}
 	return (clear_history(), SUCCESS);
 }
+
+
+///    echo" $USER %kkkkkk  $PWD m"  kkkkk  "mmmmm"
+
+////  echo 'hell' "$USER' $USER' " "$USER"

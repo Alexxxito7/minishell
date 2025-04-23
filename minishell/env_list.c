@@ -23,7 +23,7 @@ void	m_init_data(t_data *data, char *input, char **env)
 	t_env_list	*new;
 
 	i = 0;
-	data->status = 0;
+	data->exit_status = 0;
 	data->input = input;
 	data->result = NULL;
 	data->env_list.key = NULL;
