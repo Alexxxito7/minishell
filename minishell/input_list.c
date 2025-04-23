@@ -23,20 +23,22 @@ t_input_list	*m_new_input_node(t_input_list *list, char *str, char c)
 		list->next = NULL;
 		list->c = c;
 		list->str = ft_strdup(str);
-		return (list);
+		if (!list->str)
+			m_free_input_list(list);
+		return (free(str), list);
 	}
 	new_node = (t_input_list *)malloc(sizeof(t_input_list));
 	if (new_node == NULL)
-		return (NULL);
+		return (free(str), NULL);
 	new_node->str = ft_strdup(str);
 	new_node->c = c;
 	new_node->next = NULL;
     if (!new_node->str)
-		return (NULL);
+		return (free(str), NULL);
     while (list->next)
 		list = list->next;
 	list->next = new_node;
-	return (new_node);
+	return (free(str), new_node);
 }
 
 void	m_free_input_list(t_input_list *input_list)
@@ -53,4 +55,5 @@ void	m_free_input_list(t_input_list *input_list)
 	input_list->next = NULL;
 	free(input_list->str);
 	input_list->str = NULL;
+	input_list = NULL;
 }
