@@ -51,6 +51,7 @@ int m_find_variable(t_data *data, t_input_list *input_list)
 	int				end;
 
 	pnt = input_list;
+	/// hellloo
 	while (pnt)
 	{
 		if (pnt->c == 't')
