@@ -24,7 +24,7 @@ LEAK = valgrind --leak-check=full  --track-origins=yes
 OBJ = $(SRC:%.c=%.o)
 
 all: $(LIB) $(NAME)
-
+	rm -f $(OBJ)
 $(NAME): $(OBJ) $(LIB)
 	$(CC) $(FLAGS) $(OBJ) $(LIB) -o $(NAME) $(LDFLAGS)
 

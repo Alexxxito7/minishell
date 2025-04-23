@@ -17,43 +17,52 @@ t_input_list	*m_new_input_node(t_input_list *list, char *str, char c)
 	t_input_list	*new_node;
 
 	if (!list || !str)
-		return (NULL);
+		return (free(str), NULL);
 	if (list->str == NULL)
 	{
 		list->next = NULL;
 		list->c = c;
 		list->str = ft_strdup(str);
-		if (!list->str)
-			m_free_input_list(list);
+		if (list->str == NULL)
+			return (m_free_input_list(list), free(str), NULL);
 		return (free(str), list);
 	}
-	new_node = (t_input_list *)malloc(sizeof(t_input_list));
+	new_node = malloc(sizeof(t_input_list));
 	if (new_node == NULL)
-		return (free(str), NULL);
+		return (m_free_input_list(list), free(str), NULL);
 	new_node->str = ft_strdup(str);
+	if (!new_node->str)
+		return (m_free_input_list(list), free(str), NULL);
 	new_node->c = c;
 	new_node->next = NULL;
-    if (!new_node->str)
-		return (free(str), NULL);
     while (list->next)
 		list = list->next;
 	list->next = new_node;
 	return (free(str), new_node);
 }
-
-void	m_free_input_list(t_input_list *input_list)
+void m_free_input_list(t_input_list *input_list)
 {
-	t_input_list  *pnt;
-
-    pnt = input_list;
-	while (pnt)
-	{
-		t_input_list *next = pnt->next;
-		free(pnt->str);
-		pnt = next;
-	}
-	input_list->next = NULL;
-	free(input_list->str);
-	input_list->str = NULL;
-	input_list = NULL;
+    t_input_list *pnt = input_list;
+    t_input_list *next;
+    
+    while (pnt != NULL)
+    {
+        next = pnt->next;
+        free(pnt->str);   // Ազատել string-ը
+        free(pnt);        // Ազատել հենց հանգույցը
+        pnt = next;
+    }
 }
+// void	m_free_input_list(t_input_list *input_list)
+// {
+// 	t_input_list  *pnt;
+
+//     pnt = input_list;
+// 	while (pnt)
+// 	{
+// 		t_input_list *next = pnt->next;
+// 		free(pnt->str);
+// 		pnt = next;
+// 	}
+// 	free(input_list->str);
+// }

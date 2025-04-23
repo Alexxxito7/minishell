@@ -150,12 +150,12 @@ int	m_single_quote(t_data *data, t_input_list *input_list, int *start)
 
 	end = 0;
 	if (m_new_input_node(input_list, ft_substr(data->input, 0, *start), 't') == NULL)
-		return (m_free_input_list(input_list), MALLOC);
+		return (MALLOC);
 	*start += 1;
 	while (data->input[*start + end] != '\'')
 		end++;
 	if (m_new_input_node(input_list, ft_substr(data->input, *start, end), 'f') == NULL)
-		return (m_free_input_list(input_list), MALLOC);
+		return (MALLOC);
 	data->input = m_str_cut_to_end(data->input, *start + end + 1);
 	*start = -1;
 	return (SUCCESS);
@@ -181,6 +181,7 @@ int	m_find_qoute(t_data *data)
 {
 	t_input_list	input_list;
 	int				start;
+	int				status;
 
 	start = -1;
 	input_list.next	= NULL;
@@ -189,23 +190,27 @@ int	m_find_qoute(t_data *data)
 	{
 		if (data->input[start] == '\'')
 		{
-			m_single_quote(data, &input_list, &start);
+			status = m_single_quote(data, &input_list, &start);
+			if (status != SUCCESS)
+				return (status);
 		}
 		else if (data->input[start] == '\"')
 		{
-			m_double_quote(data, &input_list, &start);
+			status = m_double_quote(data, &input_list, &start);
+			if (status != SUCCESS)
+				return (status);
 		}
 	}
 	to_print(&input_list);
 	printf("---------------------------------------\n");
 	m_find_variable(data, &input_list);
-
-	return (SUCCESS);
+	return (m_free_input_list(&input_list), SUCCESS);
 }
 
 int	main(int argc, char **argv, char **env)
 {
 	char		*input;
+	int			status;
 	t_data		data;
 
 	(void)argc;
@@ -219,9 +224,10 @@ int	main(int argc, char **argv, char **env)
 			m_init_data(&data, input, env);
 			if (m_count_qoute(data.input))
 				m_print_status(128);
-			m_find_qoute(&data);
-			m_exit_error(&data, SUCCESS);
-			return (clear_history(), SUCCESS);
+			status = m_find_qoute(&data);
+			if (status != SUCCESS)
+				m_exit_error(&data, status);
+			return (clear_history(), m_exit_error(&data, status), status);
 		}
 		add_history(input);
 		free(input);
