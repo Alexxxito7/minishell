@@ -62,13 +62,14 @@ int	main(int argc, char **argv, char **env)
 	char		*input;
 	t_data		data;
 
+	signal_setup();
 	(void)argc;
 	(void)argv;
 	data.value = true;
 	while (1)
 	{
 		input = readline("minishell:~$");
-		if (input[0])
+		if (input && input[0])
 		{
 			add_history(input);
 			m_init_data(&data, input, env);
@@ -77,9 +78,11 @@ int	main(int argc, char **argv, char **env)
 			data.status = m_parsing_and_tokenizing(&data);
 			if (data.status != SUCCESS)
 				m_exit(&data, data.status);
+			free(input);
 			//m_free_data(&data);
 		}
-		free(input);
+		else if (input == NULL)
+			return (write(1, "Exiting\n", 8), exit(0), 1); // Handle Ctrl+D (EOF)
 	}
-	return (clear_history(), SUCCESS);
+	return (rl_clear_history(), SUCCESS);
 }

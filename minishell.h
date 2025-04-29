@@ -103,6 +103,10 @@ char			*m_trim(char *input);
 char			*m_cut_until_end(char *str, int start);
 char			*m_str_concat(char *str1, char *str2);
 
+// signal.c
+void	signal_setup();
+void	signal_handler(int sig);
+
 // env_list.c
 
 void			m_add_env_back(t_env_list *lst, t_env_list *new);
