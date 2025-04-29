@@ -1,26 +1,54 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rghazary <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:39:56 by rghazary          #+#    #+#             */
-/*   Updated: 2025/04/14 12:39:58 by rghazary         ###   ########.fr       */
+/*   Updated: 2025/04/26 11:02:57 by rghazary         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
+
+void	m_free_data(t_data *data)
+{
+	t_env_list	*pnt;
+	t_env_list	*next;
+
+	pnt = data->env_list.next;
+	if (data->token)
+		m_free_token_list(&data->token);
+	while (pnt)
+	{
+		next = pnt->next;
+		free(pnt->key);
+		free(pnt->value);
+		free(pnt);
+		pnt = next;
+	}
+	data->env_list.next = NULL;
+	free(data->env_list.key);
+	free(data->env_list.value);
+	free(data->input);
+	m_free(data->env_copy);
+	data->env_list.key = NULL;
+	data->env_list.value = NULL;
+}
 
 void	m_free(char **str)
 {
 	int	i;
 
 	i = 0;
-	if (!str )
+	if (!str || !str[0])
 		return ;
 	while (str[i])
-		free(str[i++]);
+	{
+		free(str[i]);
+		i++;
+	}
 	free(str);
 	str = NULL;
 }
@@ -43,20 +71,33 @@ void	m_print_status(int status)
 		write(2, "Error: Pipe/Fork \n", 18);
 	if (status == 128)
 		write(2, "Error: Invalid argument \n", 25);
-	/*
-		Signal Termination	128 + N	Command killed by signal N (e.g., SIGINT → 130, SIGSEGV → 139).
-		Builtin Command Error	126	Builtin command failed (e.g., invalid export syntax).
-		Executable Not Runnable	126	File isn’t executable (e.g., ./text_file without +x).
-		Invalid Exit Argument	128	exit called with a non-integer argument (e.g., exit abc).
-		Out-of-Range Exit	255	exit argument > 255 (e.g., exit 300).
-	*/
 }
 
-void	m_exit_error(t_data *data, int status)
+void	m_exit(t_data *data, int status)
 {
 	m_print_status(status);
 	if (data)
 		m_free_data(data);
-	rl_clear_history();
-	exit(status);
+	if (status != 128)
+		rl_clear_history();
+	data->exit_status = status;
+	if (status == 2)
+		exit(status);
+}
+
+void	m_free_token_list(t_token **token_list)
+{
+	t_token	*pnt;
+	t_token	*next;
+
+	pnt = *token_list;
+	while (pnt)
+	{
+		next = pnt->next;
+		free(pnt->token);
+		if (pnt->i_list)
+			m_free_input_list(&pnt->i_list);
+		free(pnt);
+		pnt = next;
+	}
 }

@@ -80,7 +80,7 @@ static char	**ft_create_str(char **result, const char *s, char c)
 char	**ft_split(char const *s, char c)
 {
 	char	**result;
-	
+
 	if (s == NULL || !how_many_words(s, c))
 		return (NULL);
 	result = (char **)malloc((how_many_words(s, c) + 1));

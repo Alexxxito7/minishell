@@ -1,0 +1,8 @@
+
+ 	echo $USER "$USER" '$USER' | echo $USER "$USER" '$USER' | echo $USER "$USER" '$USER'
+	echo hello | echo "this | is inside quotes" | echo 'another | quoted'
+	echo $USER | echo "$HOME | $USER" | echo '$SHELL | $PATH'
+	echo one two three | echo "four | five" | echo 'six | seven' | echo eight nine
+	echo "a | b" | echo c d | echo 'e | f' | echo g
+	echo "hello world" | echo 'single quoted | text' | echo unquoted | echo "another | one"
+
