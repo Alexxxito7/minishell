@@ -29,6 +29,8 @@
 # include <term.h>
 # include <stdbool.h>
 
+extern int	g_signal_main;
+
 enum e_struct
 {
 	SUCCESS,

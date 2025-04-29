@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+int g_signal_main = 1;
+
 void	to_print(t_i_list **list)
 {
 	t_i_list	*pnt;
@@ -81,8 +83,8 @@ int	main(int argc, char **argv, char **env)
 			free(input);
 			//m_free_data(&data);
 		}
-		else if (input == NULL)
-			return (write(1, "Exiting\n", 8), exit(0), 1); // Handle Ctrl+D (EOF)
+		else if (input == NULL && g_signal_main)
+			return (write(1, "Exiting", 7), exit(0), 1); // Handle Ctrl+D (EOF)
 	}
 	return (rl_clear_history(), SUCCESS);
 }
