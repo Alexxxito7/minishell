@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRC = minishell.c $(P_T)string.c $(P_T)free.c $(P_T)env_list.c $(P_T)input_list.c $(P_T)variable.c $(P_T)quote.c $(P_T)tokens.c $(P_T)init.c $(P_T)signal.c
+SRC = minishell.c $(P_T)string.c $(P_T)free.c $(P_T)env_list.c $(P_T)input_list.c $(P_T)variable.c $(P_T)quote.c $(P_T)tokens.c $(P_T)init.c $(P_T)signal.c redirects.c
 
 NAME = minishell
 P_T = parsing_and_tokenizing/

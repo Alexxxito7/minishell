@@ -12,63 +12,139 @@
 
 #include "minishell.h"
 
-void read_heredoc(const char *delimiter)
+/*
+Heredoc condition
+
+cat << EOF | Tabs are considered
+example:
+
+The current working directory is: $PWD
+    You are logged in as: $(whoami)
+        Hello
+EOF
+
+The current working directory is: /home/linuxize
+    You are logged in as: linuxize
+        Hello
+___________________________________________________________________
+cat <<- EOF | Tabs are not considered (they are stripped/trimmed)
+
+example:
+
+The current working directory is: $PWD
+    You are logged in as: $(whoami)
+        Hello
+EOF
+
+The current working directory is: /home/linuxize
+You are logged in as: linuxize
+Hello
+___________________________________________________________________
+cat << "PWD" or cat << 'PWD'| Variables are NOT changed ($USER stays $USER)
+
+example:
+
+The current working directory is: $PWD
+You are logged in as: $(whoami)
+Hello
+PWD
+
+The current working directory is: $PWD
+You are logged in as: $(whoami)
+Hello
+
+
+___________________________________________________________________
+cat << PWD | Variables are changed in the text, even if they are in "" or '' ('$USER' becomes 'alschnei', "$USER" becomes "alschnei" AND brackets will stay)
+
+example:
+
+$USER
+"$USER"
+'$USER'
+PWD
+
+alschnei
+"alschnei"
+'alschnei'
+
+*/
+
+
+
+
+char *strip_quotes(const char *s)
 {
-    int pipefd[2];
-    pipe(pipefd);
+    size_t len = strlen(s);
+    if ((s[0] == '\'' || s[0] == '"') && s[len - 1] == s[0])
+        return (strndup(s + 1, len - 2));
+    return ft_strdup(s);
+}
 
-    pid_t pid = fork();
-    if (pid == 0)
+int is_quoted(const char *s)
+{
+    size_t len = strlen(s);
+    return (len >= 2 && ((s[0] == '"' && s[len - 1] == '"') || (s[0] == '\'' && s[len - 1] == '\'')));
+}
+
+//expand_vars for finding env_variables m_replace_variable(t_data *data, char *var_name)
+
+char *heredoc(char *herestring)
+{
+    char *raw = herestring;
+
+    int strip_tabs = 0;
+    const char *delimiter_start;
+
+    if (strncmp(raw, "<<-", 3) == 0)
     {
-        // === CHILD PROCESS: handles heredoc input ===
+        strip_tabs = 1;
+        delimiter_start = raw + 3;
+    } else if (strncmp(raw, "<<", 2) == 0)
+    {
+        delimiter_start = raw + 2;
+    } else {
+        return NULL; // Not a heredoc
+    }
+    while (*delimiter_start == ' ')
+        delimiter_start++;
 
-        g_signal_main = 0;             // heredoc mode
-        signal_handler();          // heredoc signal behavior
-        close(pipefd[0]);              // child only writes
+    int quoted = is_quoted(delimiter_start);
+    char *delimiter = strip_quotes(delimiter_start);
 
-        while (1)
+    char *result = calloc(1, 1);
+    char *line;
+
+    while (1) {
+        line = readline("> ");
+        if (!line)
+            break;
+
+        if (strip_tabs) {
+            while (*line == '\t')
+                ft_memmove(line, line + 1, strlen(line));
+        }
+        if (strcmp(line, delimiter) == 0)
         {
-            char *line = readline("> ");
-
-            if (!line)
-            {
-                // Ctrl+D pressed: EOF
-                write(1, "\n", 1);
-                break;
-            }
-
-            if (strcmp(line, delimiter) == 0)
-            {
-                // Delimiter reached
-                free(line);
-                break;
-            }
-
-            // Write input to heredoc pipe
-            write(pipefd[1], line, strlen(line));
-            write(pipefd[1], "\n", 1);
             free(line);
+            break;
         }
-        close(pipefd[1]);
-        exit(0);  // normal heredoc exit
-    }
-    else
-    {
-        // === PARENT PROCESS: waits and sets up STDIN ===
-        int status;
-        close(pipefd[1]);              // parent only reads
-        waitpid(pid, &status, 0);      // wait for heredoc process
-        g_signal_main = 1;             // back to shell mode
-        signal_handler();
-        if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+        if (!quoted)
         {
-            // Ctrl+C during heredoc → abort input
-            close(pipefd[0]);
-            return;
+            char *expanded = expand_vars(line);
+            free(line);
+            line = expanded;
         }
-
-        // If heredoc exited normally: redirect STDIN to heredoc content
-        dup2(pipefd[0], STDIN_FILENO);
-        close(pipefd[0]);
+        char *tmp = malloc(strlen(result) + strlen(line) + 2);
+        if (!tmp)
+            exit(1); // Handle memory error
+        strcpy(tmp, result);
+        strcat(tmp, line);
+        strcat(tmp, "\n");
+        free(result);
+        result = tmp;
+        free(line);
     }
+    free(delimiter);
+    return (printf("%s", result), result);
 }

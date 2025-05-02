@@ -37,6 +37,16 @@ enum e_struct
 	ERROR,
 	MALLOC
 };
+
+typedef struct s_cmd
+{
+	char **args;
+	int infile;
+	int outfile;
+	int heredoc;
+	// other fields...
+}	t_cmd;
+
 typedef struct s_i_list
 {
 	char				*str;
@@ -128,5 +138,8 @@ int				m_create_tokens(t_data *data);
 int				m_trim_tokens(t_data *data);
 void			m_free_token_list(t_token **token_list);
 t_token			*m_new_token(t_token **list, char *str);
+
+char *heredoc_read_lines(const char *delimiter);
+int	open_heredoc(const char *delimiter);
 
 #endif
